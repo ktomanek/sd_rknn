@@ -16,3 +16,4 @@ omegaconf>=2.3           # from_single_file config parsing for .safetensors
 onnx>=1.22
 onnxruntime>=1.28
 optimum[onnxruntime]>=2.1   # brings in optimum-onnx (the exporter) as a dependency
+onnxscript>=0.1            # torch.onnx.export (dynamo path) needs it — used by export_taesd.py
