@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+
+# Virtual environments
+venv/
+.venv/
+env/
+src/venv/
+
+
+*.onnx
+*.onnx_data
+*.rknn
+*.safetensors
+*.ckpt
+*.bin
+*.pt
+*.pth
+check*.onnx
+*.onnx.orig
+*.onnx.bak
+*.bak
+*.part
+
+# OS junk
+.DS_Store
+._*

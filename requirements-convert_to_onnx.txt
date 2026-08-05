@@ -1,0 +1,18 @@
+# Dependencies for the SD conversion pipeline (safetensors --> diffusers --> onnx).
+numpy>=1.24
+pillow>=10.0
+safetensors>=0.4.0
+
+# Torch: needed by diffusers.from_single_file and the scheduler.step() calls.
+# On Mac/CPU the default wheel is fine.
+torch>=2.1
+
+diffusers>=0.39
+transformers>=4.57       # optimum 2.x pins transformers to the 4.x line
+accelerate>=1.14         # from_single_file weight loading
+omegaconf>=2.3           # from_single_file config parsing for .safetensors
+
+# ONNX export + CPU validation
+onnx>=1.22
+onnxruntime>=1.28
+optimum[onnxruntime]>=2.1   # brings in optimum-onnx (the exporter) as a dependency

@@ -1,0 +1,23 @@
+# Dependencies for converting onnx to rknn and running rknn on RK3588
+#   sd_conversion/convert_onnx_to_rknn.py   (ONNX -> RKNN)   needs rknn-toolkit2
+#   runners/run_rknn_lcm.py                 (NPU inference)  needs rknn-toolkit-lite2
+
+numpy>=1.24
+pillow>=10.0
+
+# Torch here is used ONLY for scheduler.step() (torch.from_numpy) and tokenizer glue,
+# NOT for model inference (that's the NPU). A CPU-only build is enough and much lighter.
+torch>=2.1
+
+diffusers>=0.23,<0.30
+transformers>=4.35,<4.45
+
+# ---------------------------------------------------------------------------
+# NOT ON PYPI — install these two manually from Rockchip's release repo.
+# They are aarch64 wheels matching the board's NPU driver + Python version.
+#
+#   rknn-toolkit2       >= 2.3.0   (model conversion: convert_onnx_to_rknn.py)
+#   rknn-toolkit-lite2  >= 2.3.0   (on-device inference: run_rknn_lcm.py)
+#
+# IMPORTANT: 2.3.0+ is required — 2.2.0 has a fp16 precision bug that yields
+# washed-out / garbage images.
