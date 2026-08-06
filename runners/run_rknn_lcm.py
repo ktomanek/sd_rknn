@@ -20,7 +20,12 @@ import numpy as np
 import os
 
 import torch  # Only used for `torch.from_tensor` in `pipe.scheduler.step()`
-from transformers import CLIPFeatureExtractor, CLIPTokenizer
+# CLIPFeatureExtractor was renamed to CLIPImageProcessor (removed in transformers 5.x)
+try:
+    from transformers import CLIPFeatureExtractor
+except ImportError:
+    from transformers import CLIPImageProcessor as CLIPFeatureExtractor
+from transformers import CLIPTokenizer
 from typing import Callable, List, Optional, Union, Tuple
 from PIL import Image
 
