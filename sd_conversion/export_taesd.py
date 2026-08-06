@@ -50,7 +50,11 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--output", "-o", required=True,
-                    help="Output directory for model.onnx + config.json")
+                    help="Parent output directory. Files are written to a 'vae_decoder/' "
+                         "subdir inside it (model.onnx + config.json), matching the layout "
+                         "convert_onnx_to_rknn.py expects: '-m <output> -c vae_decoder'. The "
+                         "'vae_decoder' name is also what makes the converter pick the right "
+                         "input shape.")
     ap.add_argument("--repo", "-r", default=DEFAULT_REPO,
                     help=f"Hugging Face repo id (default: {DEFAULT_REPO})")
     ap.add_argument("--size", "-s", default="256x256",
@@ -64,7 +68,9 @@ def main() -> int:
     height, width = parse_size(args.size)
     latent_h, latent_w = height // 8, width // 8
 
-    out_dir = Path(args.output)
+    # Write into a 'vae_decoder/' subdir so the output slots straight into
+    # convert_onnx_to_rknn.py's <model_dir>/<component>/model.onnx convention.
+    out_dir = Path(args.output) / "vae_decoder"
     out_dir.mkdir(parents=True, exist_ok=True)
     onnx_path = out_dir / "model.onnx"
 
@@ -92,12 +98,15 @@ def main() -> int:
     config_path.write_text(json.dumps(config, indent=2) + "\n")
     print(f"Wrote {config_path}: {config}")
 
+    parent = out_dir.parent
     print("\nDone. Next:")
     print(f"  1. Verify on PC:  python runners/run_onnx_lcm.py --prompt '...' "
           f"-i <model_onnx> --vae-dir {out_dir} -s {args.size}")
     print(f"  2. On the board:  python sd_conversion/convert_onnx_to_rknn.py "
-          f"-m {out_dir} -c model -r {args.size}")
-    print(f"     then copy {config_path.name} next to the produced model.rknn.")
+          f"-m {parent} -c vae_decoder -r {args.size}")
+    print(f"     -> produces {out_dir / 'model.rknn'} (config.json already alongside).")
+    print(f"  3. Run:           python runners/run_rknn_lcm.py --prompt '...' "
+          f"-i <model_rknn> --vae-dir {out_dir} -s {args.size}")
     return 0
 
 

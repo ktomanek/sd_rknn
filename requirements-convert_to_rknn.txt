@@ -5,6 +5,10 @@
 numpy>=1.24
 pillow>=10.0
 
+# rknn-toolkit2 imports pkg_resources, which setuptools REMOVED in 81. Newer venvs
+# ship setuptools>=81 (or none), so pin below 81 or conversion fails.
+setuptools<81
+
 # Torch here is used ONLY for scheduler.step() (torch.from_numpy) and tokenizer glue,
 # NOT for model inference (that's the NPU). A CPU-only build is enough and much lighter.
 torch>=2.1
